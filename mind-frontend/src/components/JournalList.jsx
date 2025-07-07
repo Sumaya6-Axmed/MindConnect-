@@ -24,12 +24,20 @@ const JournalList = ({ user }) => {
         console.error("No token found")
         return
       }
+      
+      console.log("Fetching journals for user ID:", user.id)
+      console.log("Token:", token ? "Present" : "Missing")
+      
       const response = await axios.get(`http://localhost:8080/api/journals/user/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
+      
+      console.log("Journals response:", response.data)
       setJournals(response.data)
     } catch (error) {
       console.error("Error fetching journals:", error)
+      console.error("Error response:", error.response?.data)
+      console.error("Error status:", error.response?.status)
     } finally {
       setLoading(false)
     }

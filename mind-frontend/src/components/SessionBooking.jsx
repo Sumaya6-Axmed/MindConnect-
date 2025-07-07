@@ -24,7 +24,17 @@ const SessionBooking = ({ user }) => {
 
   const fetchTherapists = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/therapists/available")
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.error("Authentication token not found")
+        return
+      }
+
+      const response = await axios.get("http://localhost:8080/api/therapists/available", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       setTherapists(response.data)
     } catch (error) {
       console.error("Error fetching therapists:", error)

@@ -20,7 +20,18 @@ const MotivationContent = () => {
 
   const fetchMotivations = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/motivations/active")
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.error("Authentication token not found")
+        setLoading(false)
+        return
+      }
+
+      const response = await axios.get("http://localhost:8080/api/motivations/active", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       setMotivations(response.data)
     } catch (error) {
       console.error("Error fetching motivations:", error)

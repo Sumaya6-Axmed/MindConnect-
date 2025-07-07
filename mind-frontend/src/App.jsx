@@ -12,6 +12,10 @@ import Register from "./components/Register"
 import UserDashboard from "./components/UserDashboard"
 import TherapistDashboard from "./components/TherapistDashboard"
 import AdminDashboard from "./components/AdminDashboard"
+import AdminUserManagement from "./components/AdminUserManagement"
+import AdminTherapistManagement from "./components/AdminTherapistManagement"
+import AdminSessionManagement from "./components/AdminSessionManagement"
+import AdminJournalManagement from "./components/AdminJournalManagement"
 import JournalList from "./components/JournalList"
 import JournalForm from "./components/JournalForm"
 import SessionBooking from "./components/SessionBooking"
@@ -140,6 +144,38 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile user={user} userType={userType} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <AdminUserManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/therapists"
+              element={
+                <ProtectedRoute>
+                  <AdminTherapistManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/sessions"
+              element={
+                <ProtectedRoute>
+                  <AdminSessionManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/journals"
+              element={
+                <ProtectedRoute>
+                  <AdminJournalManagement />
                 </ProtectedRoute>
               }
             />

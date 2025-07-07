@@ -42,7 +42,7 @@ const UserDashboard = ({ user }) => {
       }))
 
       // Fetch motivation
-      const motivationResponse = await axios.get("http://localhost:8080/api/motivations/active")
+      const motivationResponse = await axios.get("http://localhost:8080/api/motivations/active", { headers })
       if (motivationResponse.data.length > 0) {
         const randomIndex = Math.floor(Math.random() * motivationResponse.data.length)
         setMotivation(motivationResponse.data[randomIndex])

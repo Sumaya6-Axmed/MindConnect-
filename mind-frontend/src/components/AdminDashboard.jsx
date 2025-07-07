@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import axios from "axios"
 
 const AdminDashboard = () => {
@@ -160,22 +161,22 @@ const AdminDashboard = () => {
       <div className="text-center mt-10">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <button className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
+          <Link to="/admin/users" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
             <span className="text-3xl">👥</span>
             Manage Users
-          </button>
-          <button className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
+          </Link>
+          <Link to="/admin/therapists" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
             <span className="text-3xl">👨‍⚕️</span>
             Manage Therapists
-          </button>
-          <button className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
-            <span className="text-3xl">📊</span>
-            View Reports
-          </button>
-          <button className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
-            <span className="text-3xl">⚙️</span>
-            System Settings
-          </button>
+          </Link>
+          <Link to="/admin/sessions" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
+            <span className="text-3xl">📅</span>
+            Manage Sessions
+          </Link>
+          <Link to="/admin/journals" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
+            <span className="text-3xl">📝</span>
+            Manage Journals
+          </Link>
         </div>
       </div>
     </div>

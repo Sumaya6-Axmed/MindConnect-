@@ -41,10 +41,18 @@ const SessionList = ({ user, userType }) => {
       console.log("User ID:", user.id);
       console.log("User Type:", userType);
 
-      // Since session endpoints are now public, we don't need to send Authorization header
+      // Get JWT token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError("Authentication token not found. Please login again.");
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.get(endpoint, {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
       });
 
@@ -53,7 +61,11 @@ const SessionList = ({ user, userType }) => {
       setError("");
     } catch (error) {
       console.error("Error fetching sessions:", error);
-      setError(error.response?.data || "Failed to fetch sessions");
+      if (error.response?.status === 403) {
+        setError("Access denied. Please check your authentication.");
+      } else {
+        setError(error.response?.data || "Failed to fetch sessions");
+      }
     } finally {
       setLoading(false);
     }
@@ -61,12 +73,19 @@ const SessionList = ({ user, userType }) => {
 
   const updateSessionStatus = async (sessionId, status) => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error("Authentication token not found");
+        return;
+      }
+
       await axios.put(
         `http://localhost:8080/api/sessions/${sessionId}/status`,
         status,
         {
           headers: { 
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
         }
       );

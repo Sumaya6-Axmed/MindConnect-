@@ -6,11 +6,14 @@ import mind_backend.example.mind_connect.entity.Therapist;
 import mind_backend.example.mind_connect.entity.User;
 import mind_backend.example.mind_connect.entity.Session;
 import mind_backend.example.mind_connect.entity.Session.SessionStatus;
+import mind_backend.example.mind_connect.entity.Journal;
+import mind_backend.example.mind_connect.entity.Journal.MoodLevel;
 import mind_backend.example.mind_connect.repository.RoleRepository;
 import mind_backend.example.mind_connect.repository.MotivationRepository;
 import mind_backend.example.mind_connect.repository.TherapistRepository;
 import mind_backend.example.mind_connect.repository.UserRepository;
 import mind_backend.example.mind_connect.repository.SessionRepository;
+import mind_backend.example.mind_connect.repository.JournalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +37,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private SessionRepository sessionRepository;
+
+    @Autowired
+    private JournalRepository journalRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -169,6 +175,47 @@ public class DataInitializer implements CommandLineRunner {
                 session3.setDuration(90);
                 session3.setNotes("Extended session for deep work");
                 sessionRepository.save(session3);
+            }
+        }
+
+        // Initialize sample journals
+        if (journalRepository.count() == 0) {
+            // Get the first user for sample journals
+            User sampleUser = userRepository.findByEmail("mohamed@gmail.com").orElse(null);
+            
+            if (sampleUser != null) {
+                // Create sample journals
+                Journal journal1 = new Journal();
+                journal1.setUser(sampleUser);
+                journal1.setTitle("My First Therapy Session");
+                journal1.setContent("Today I had my first therapy session with Dr. Sarah. I was nervous at first, but she made me feel comfortable. We talked about my anxiety and she gave me some breathing exercises to try. I feel hopeful about this journey.");
+                journal1.setMood(MoodLevel.HAPPY);
+                journal1.setTags("therapy, anxiety, hope");
+                journalRepository.save(journal1);
+
+                Journal journal2 = new Journal();
+                journal2.setUser(sampleUser);
+                journal2.setTitle("Feeling Overwhelmed");
+                journal2.setContent("Work has been really stressful lately. I'm having trouble sleeping and my anxiety is getting worse. I need to remember to use the breathing techniques Dr. Sarah taught me.");
+                journal2.setMood(MoodLevel.STRESSED);
+                journal2.setTags("work, stress, anxiety, sleep");
+                journalRepository.save(journal2);
+
+                Journal journal3 = new Journal();
+                journal3.setUser(sampleUser);
+                journal3.setTitle("Good Day Today");
+                journal3.setContent("I had a really good day today! I practiced the breathing exercises and they really helped. I also went for a walk in the park which was very relaxing. I'm starting to feel more in control.");
+                journal3.setMood(MoodLevel.VERY_HAPPY);
+                journal3.setTags("good day, breathing exercises, walking, progress");
+                journalRepository.save(journal3);
+
+                Journal journal4 = new Journal();
+                journal4.setUser(sampleUser);
+                journal4.setTitle("Reflection on Progress");
+                journal4.setContent("It's been a few weeks since I started therapy and I can see some positive changes. My anxiety is still there but I'm learning to manage it better. I'm grateful for the support I'm receiving.");
+                journal4.setMood(MoodLevel.CALM);
+                journal4.setTags("progress, gratitude, therapy, anxiety management");
+                journalRepository.save(journal4);
             }
         }
     }
