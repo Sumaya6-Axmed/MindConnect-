@@ -5,6 +5,7 @@ import mind_backend.example.mind_connect.entity.Motivation.ContentType;
 import mind_backend.example.mind_connect.service.MotivationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -43,7 +44,9 @@ public class MotivationController {
         return motivationService.getMotivationsByCategory(category);
     }
 
+    // Admin-only endpoints
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createMotivation(@RequestBody Motivation motivation) {
         try {
             Motivation createdMotivation = motivationService.createMotivation(motivation);
@@ -54,6 +57,7 @@ public class MotivationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateMotivation(@PathVariable Long id, @RequestBody Motivation motivation) {
         try {
             Motivation updatedMotivation = motivationService.updateMotivation(id, motivation);
@@ -64,6 +68,7 @@ public class MotivationController {
     }
 
     @PutMapping("/{id}/toggle")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> toggleActive(@PathVariable Long id) {
         try {
             Motivation updatedMotivation = motivationService.toggleActive(id);
@@ -74,6 +79,7 @@ public class MotivationController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteMotivation(@PathVariable Long id) {
         try {
             motivationService.deleteMotivation(id);

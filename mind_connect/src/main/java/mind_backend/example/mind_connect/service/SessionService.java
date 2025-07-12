@@ -23,6 +23,9 @@ public class SessionService {
     @Autowired
     private TherapistRepository therapistRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
@@ -58,21 +61,43 @@ public class SessionService {
         Session session = sessionRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Session not found"));
 
+        // Check if session date changed (rescheduling)
+        boolean isRescheduled = !session.getSessionDate().equals(sessionDetails.getSessionDate());
+        
         session.setSessionDate(sessionDetails.getSessionDate());
         session.setStatus(sessionDetails.getStatus());
         session.setNotes(sessionDetails.getNotes());
         session.setSessionType(sessionDetails.getSessionType());
         session.setDuration(sessionDetails.getDuration());
 
-        return sessionRepository.save(session);
+        Session updatedSession = sessionRepository.save(session);
+
+        // Create notification if session was rescheduled
+        if (isRescheduled) {
+            String newDate = sessionDetails.getSessionDate().toString();
+            notificationService.createSessionRescheduledNotification(updatedSession, newDate);
+        }
+
+        return updatedSession;
     }
 
     public Session updateSessionStatus(Long id, SessionStatus status) {
         Session session = sessionRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Session not found"));
         
+        SessionStatus oldStatus = session.getStatus();
         session.setStatus(status);
-        return sessionRepository.save(session);
+        Session updatedSession = sessionRepository.save(session);
+
+        // Create notifications based on status change
+        if (status == SessionStatus.CANCELLED && oldStatus != SessionStatus.CANCELLED) {
+            String reason = session.getNotes() != null ? session.getNotes() : "No reason provided";
+            notificationService.createSessionCancelledNotification(updatedSession, reason);
+        } else if (status == SessionStatus.COMPLETED && oldStatus != SessionStatus.COMPLETED) {
+            notificationService.createSessionCompletedNotification(updatedSession);
+        }
+
+        return updatedSession;
     }
 
     public void deleteSession(Long id) {

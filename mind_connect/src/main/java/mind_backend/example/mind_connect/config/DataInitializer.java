@@ -10,6 +10,7 @@ import mind_backend.example.mind_connect.entity.Journal;
 import mind_backend.example.mind_connect.entity.Journal.MoodLevel;
 import mind_backend.example.mind_connect.repository.RoleRepository;
 import mind_backend.example.mind_connect.repository.MotivationRepository;
+import mind_backend.example.mind_connect.repository.NotificationRepository;
 import mind_backend.example.mind_connect.repository.TherapistRepository;
 import mind_backend.example.mind_connect.repository.UserRepository;
 import mind_backend.example.mind_connect.repository.SessionRepository;
@@ -28,6 +29,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private MotivationRepository motivationRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private TherapistRepository therapistRepository;

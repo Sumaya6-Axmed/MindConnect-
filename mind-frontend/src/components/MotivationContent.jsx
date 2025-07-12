@@ -96,6 +96,7 @@ const MotivationContent = () => {
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">Motivational Content</h1>
         <p className="text-lg text-gray-600">Discover inspiration, tips, and exercises to support your mental health journey</p>
+        <p className="text-sm text-gray-500 mt-2">Curated by our team of mental health professionals</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-5 mb-8 items-center">

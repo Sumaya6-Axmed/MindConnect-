@@ -16,6 +16,8 @@ import AdminUserManagement from "./components/AdminUserManagement"
 import AdminTherapistManagement from "./components/AdminTherapistManagement"
 import AdminSessionManagement from "./components/AdminSessionManagement"
 import AdminJournalManagement from "./components/AdminJournalManagement"
+import AdminMotivationManagement from "./components/AdminMotivationManagement"
+import NotificationList from "./components/NotificationList"
 import JournalList from "./components/JournalList"
 import JournalForm from "./components/JournalForm"
 import SessionBooking from "./components/SessionBooking"
@@ -148,6 +150,14 @@ function App() {
               }
             />
             <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationList user={user} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin/users"
               element={
                 <ProtectedRoute>
@@ -176,6 +186,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminJournalManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/motivation"
+              element={
+                <ProtectedRoute>
+                  <AdminMotivationManagement />
                 </ProtectedRoute>
               }
             />

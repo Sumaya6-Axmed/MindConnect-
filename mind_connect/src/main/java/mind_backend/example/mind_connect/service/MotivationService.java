@@ -19,7 +19,7 @@ public class MotivationService {
     }
 
     public List<Motivation> getActiveMotivations() {
-        return motivationRepository.findAll();
+        return motivationRepository.findByActiveTrue();
     }
 
     public Optional<Motivation> getMotivationById(Long id) {

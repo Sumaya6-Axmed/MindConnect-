@@ -58,6 +58,10 @@ public class User {
     @JsonIgnore
     private List<Session> sessions;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Notification> notifications;
+
     // Constructors
     public User() {
         this.createdAt = LocalDateTime.now();
@@ -106,6 +110,9 @@ public class User {
 
     public List<Session> getSessions() { return sessions; }
     public void setSessions(List<Session> sessions) { this.sessions = sessions; }
+
+    public List<Notification> getNotifications() { return notifications; }
+    public void setNotifications(List<Notification> notifications) { this.notifications = notifications; }
 
     @PreUpdate
     public void preUpdate() {

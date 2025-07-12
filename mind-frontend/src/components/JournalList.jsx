@@ -95,22 +95,22 @@ const JournalList = ({ user }) => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-8">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 gap-5">
-        <h1 className="text-4xl font-bold text-gray-800">My Journal Entries</h1>
+    <div className="max-w-6xl mx-auto p-4 sm:p-8">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 sm:mb-8 gap-4 sm:gap-5">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">My Journal Entries</h1>
         <Link 
           to="/journal/new" 
-          className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 inline-block text-center"
+          className="px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 inline-block text-center text-sm sm:text-base"
         >
           New Entry
         </Link>
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <select 
           value={filter} 
           onChange={(e) => setFilter(e.target.value)} 
-          className="px-4 py-2 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer focus:outline-none focus:border-indigo-500"
+          className="w-full sm:w-auto px-4 py-2 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer focus:outline-none focus:border-indigo-500"
         >
           <option value="all">All Moods</option>
           <option value="VERY_HAPPY">Very Happy</option>
@@ -126,28 +126,28 @@ const JournalList = ({ user }) => {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredJournals.length > 0 ? (
           filteredJournals.map((journal) => (
             <div key={journal.id} className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex justify-between items-center p-5 pb-0">
-                <div className="text-3xl w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full">
+              <div className="flex justify-between items-center p-4 sm:p-5 pb-0">
+                <div className="text-2xl sm:text-3xl w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-100 rounded-full">
                   {getMoodEmoji(journal.mood)}
                 </div>
-                <div className="text-sm text-gray-600 font-medium">
+                <div className="text-xs sm:text-sm text-gray-600 font-medium">
                   {new Date(journal.createdAt).toLocaleDateString()}
                 </div>
               </div>
 
-              <div className="p-5">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">{journal.title}</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
-                  {journal.content.substring(0, 150)}...
+              <div className="p-4 sm:p-5">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">{journal.title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-3 sm:mb-4 text-sm sm:text-base">
+                  {journal.content.substring(0, 120)}...
                 </p>
                 {journal.tags && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {journal.tags.split(",").map((tag, index) => (
-                      <span key={index} className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-medium">
+                      <span key={index} className="bg-indigo-100 text-indigo-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                         {tag.trim()}
                       </span>
                     ))}
@@ -155,16 +155,16 @@ const JournalList = ({ user }) => {
                 )}
               </div>
 
-              <div className="flex gap-3 p-5 pt-0">
+              <div className="flex gap-2 sm:gap-3 p-4 sm:p-5 pt-0">
                 <Link 
                   to={`/journal/edit/${journal.id}`} 
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-sm"
+                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-xs sm:text-sm text-center"
                 >
                   Edit
                 </Link>
                 <button 
                   onClick={() => deleteJournal(journal.id)} 
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-xs sm:text-sm"
                 >
                   Delete
                 </button>
@@ -172,13 +172,13 @@ const JournalList = ({ user }) => {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-16">
-            <div className="text-6xl mb-4">📝</div>
-            <h3 className="text-2xl font-semibold text-gray-800 mb-2">No journal entries found</h3>
-            <p className="text-gray-600 mb-6">Start your mental health journey by writing your first entry</p>
+          <div className="col-span-full text-center py-12 sm:py-16">
+            <div className="text-4xl sm:text-6xl mb-4">📝</div>
+            <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2">No journal entries found</h3>
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Start your mental health journey by writing your first entry</p>
             <Link 
               to="/journal/new" 
-              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 inline-block"
+              className="px-4 sm:px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 inline-block text-sm sm:text-base"
             >
               Write First Entry
             </Link>

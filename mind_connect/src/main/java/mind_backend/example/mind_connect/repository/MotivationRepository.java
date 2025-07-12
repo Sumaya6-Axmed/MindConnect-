@@ -9,4 +9,5 @@ import java.util.List;
 public interface MotivationRepository extends JpaRepository<Motivation, Long> {
     List<Motivation> findByType(Motivation.ContentType type);
     List<Motivation> findByCategory(String category);
+    List<Motivation> findByActiveTrue();
 }
