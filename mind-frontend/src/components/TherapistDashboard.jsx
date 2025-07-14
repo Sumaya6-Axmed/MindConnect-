@@ -97,19 +97,28 @@ const TherapistDashboard = ({ user }) => {
       const token = localStorage.getItem("token")
       const headers = { Authorization: `Bearer ${token}` }
 
+      console.log("Therapist searching for:", searchTerm)
+
       const response = await axios.get(`http://localhost:8080/api/sessions/therapist/${user.id}`, { headers })
       const sessions = response.data
 
-      const filtered = sessions.filter(session => 
-        session.user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.user.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      console.log("Sessions data:", sessions)
 
+      const filtered = sessions.filter(session => {
+        const searchLower = searchTerm.toLowerCase()
+        const firstNameMatch = session.user?.firstName?.toLowerCase().includes(searchLower)
+        const lastNameMatch = session.user?.lastName?.toLowerCase().includes(searchLower)
+        const emailMatch = session.user?.email?.toLowerCase().includes(searchLower)
+        
+        return firstNameMatch || lastNameMatch || emailMatch
+      })
+
+      console.log("Filtered sessions:", filtered)
       setSearchResults(filtered)
       setShowSearch(true)
     } catch (error) {
       console.error("Error searching:", error)
+      alert("Error searching. Please try again.")
     }
   }
 

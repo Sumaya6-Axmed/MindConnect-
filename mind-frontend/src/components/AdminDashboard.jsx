@@ -9,7 +9,6 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalTherapists: 0,
     totalSessions: 0,
-    totalJournals: 0,
   })
   const [recentUsers, setRecentUsers] = useState([])
   const [recentSessions, setRecentSessions] = useState([])
@@ -27,18 +26,16 @@ const AdminDashboard = () => {
       const headers = { Authorization: `Bearer ${token}` }
 
       // Fetch all data
-      const [usersRes, therapistsRes, sessionsRes, journalsRes] = await Promise.all([
+      const [usersRes, therapistsRes, sessionsRes] = await Promise.all([
         axios.get("http://localhost:8080/api/users", { headers }),
         axios.get("http://localhost:8080/api/therapists", { headers }),
         axios.get("http://localhost:8080/api/sessions", { headers }),
-        axios.get("http://localhost:8080/api/journals", { headers }),
       ])
 
       setStats({
         totalUsers: usersRes.data.length,
         totalTherapists: therapistsRes.data.length,
         totalSessions: sessionsRes.data.length,
-        totalJournals: journalsRes.data.length,
       })
 
       setRecentUsers(usersRes.data.slice(-5).reverse())
@@ -59,27 +56,39 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("token")
       const headers = { Authorization: `Bearer ${token}` }
 
+      console.log("Searching for:", searchTerm)
+
       const [usersRes, therapistsRes] = await Promise.all([
         axios.get("http://localhost:8080/api/users", { headers }),
         axios.get("http://localhost:8080/api/therapists", { headers }),
       ])
+
+      console.log("Users data:", usersRes.data)
+      console.log("Therapists data:", therapistsRes.data)
 
       const allResults = [
         ...usersRes.data.map(user => ({ ...user, type: 'user' })),
         ...therapistsRes.data.map(therapist => ({ ...therapist, type: 'therapist' }))
       ]
 
-      const filtered = allResults.filter(item => 
-        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.specialization && item.specialization.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+      console.log("All results before filtering:", allResults)
 
+      const filtered = allResults.filter(item => {
+        const searchLower = searchTerm.toLowerCase()
+        const firstNameMatch = item.firstName?.toLowerCase().includes(searchLower)
+        const lastNameMatch = item.lastName?.toLowerCase().includes(searchLower)
+        const emailMatch = item.email?.toLowerCase().includes(searchLower)
+        const specializationMatch = item.specialization?.toLowerCase().includes(searchLower)
+        
+        return firstNameMatch || lastNameMatch || emailMatch || specializationMatch
+      })
+
+      console.log("Filtered results:", filtered)
       setSearchResults(filtered)
       setShowSearch(true)
     } catch (error) {
       console.error("Error searching:", error)
+      alert("Error searching. Please try again.")
     }
   }
 
@@ -208,18 +217,6 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Journals</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totalJournals}</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <span className="text-2xl">📝</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Recent Activity */}
@@ -307,10 +304,6 @@ const AdminDashboard = () => {
           <Link to="/admin/sessions" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
             <span className="text-3xl">📅</span>
             Manage Sessions
-          </Link>
-          <Link to="/admin/journals" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
-            <span className="text-3xl">📝</span>
-            Manage Journals
           </Link>
           <Link to="/admin/motivation" className="flex flex-col items-center gap-3 p-6 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:border-indigo-500 hover:bg-gray-50 hover:-translate-y-0.5">
             <span className="text-3xl">💪</span>

@@ -7,6 +7,8 @@ import "./App.css"
 // Components
 import Navbar from "./components/Navbar"
 import Home from "./components/Home"
+import About from "./components/About"
+import Contact from "./components/Contact"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import UserDashboard from "./components/UserDashboard"
@@ -69,6 +71,8 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={token ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
             <Route path="/register" element={token ? <Navigate to="/dashboard" /> : <Register />} />
             <Route
@@ -178,14 +182,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminSessionManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/journals"
-              element={
-                <ProtectedRoute>
-                  <AdminJournalManagement />
                 </ProtectedRoute>
               }
             />

@@ -8,14 +8,16 @@ const AdminUserManagement = () => {
   const [loading, setLoading] = useState(true)
   const [editingUser, setEditingUser] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    password: "",
     phone: "",
     age: "",
     emergencyContact: "",
-    role: { name: "USER" }
+    userType: "USER"
   })
 
   useEffect(() => {
@@ -41,18 +43,26 @@ const AdminUserManagement = () => {
       const token = localStorage.getItem("token")
       const headers = { Authorization: `Bearer ${token}` }
 
+      // Prepare data for submission
+      const submitData = {
+        ...formData,
+        age: formData.age ? parseInt(formData.age) : null
+      }
+
       if (editingUser) {
-        await axios.put(`http://localhost:8080/api/users/${editingUser.id}`, formData, { headers })
+        await axios.put(`http://localhost:8080/api/users/${editingUser.id}`, submitData, { headers })
       } else {
-        await axios.post("http://localhost:8080/api/users", formData, { headers })
+        await axios.post("http://localhost:8080/api/users", submitData, { headers })
       }
 
       setShowForm(false)
       setEditingUser(null)
       resetForm()
+      setError("")
       fetchUsers()
     } catch (error) {
       console.error("Error saving user:", error)
+      setError(error.response?.data || "Error saving user. Please try again.")
     }
   }
 
@@ -62,12 +72,14 @@ const AdminUserManagement = () => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      password: "", // Don't show existing password
       phone: user.phone || "",
       age: user.age || "",
       emergencyContact: user.emergencyContact || "",
-      role: user.role
+      userType: user.role?.name || "USER"
     })
     setShowForm(true)
+    setError("")
   }
 
   const handleDelete = async (userId) => {
@@ -88,10 +100,11 @@ const AdminUserManagement = () => {
       firstName: "",
       lastName: "",
       email: "",
+      password: "",
       phone: "",
       age: "",
       emergencyContact: "",
-      role: { name: "USER" }
+      userType: "USER"
     })
   }
 
@@ -119,6 +132,7 @@ const AdminUserManagement = () => {
             setShowForm(true)
             setEditingUser(null)
             resetForm()
+            setError("")
           }}
           className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
         >
@@ -131,6 +145,18 @@ const AdminUserManagement = () => {
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             {editingUser ? "Edit User" : "Add New User"}
           </h2>
+          
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-red-800 font-medium">{error}</p>
+              </div>
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -166,6 +192,21 @@ const AdminUserManagement = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {editingUser ? "New Password (leave blank to keep current)" : "Password"}
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                required={!editingUser}
+                minLength={6}
               />
             </div>
 
@@ -205,6 +246,21 @@ const AdminUserManagement = () => {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+              <select
+                name="userType"
+                value={formData.userType}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                required
+              >
+                <option value="USER">User</option>
+                <option value="THERAPIST">Therapist</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
@@ -218,6 +274,7 @@ const AdminUserManagement = () => {
                   setShowForm(false)
                   setEditingUser(null)
                   resetForm()
+                  setError("")
                 }}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
               >

@@ -12,6 +12,7 @@ const AdminTherapistManagement = () => {
     firstName: "",
     lastName: "",
     email: "",
+    password: "",
     phone: "",
     specialization: "",
     qualification: "",
@@ -65,6 +66,7 @@ const AdminTherapistManagement = () => {
       firstName: therapist.firstName,
       lastName: therapist.lastName,
       email: therapist.email,
+      password: "", // Don't show existing password
       phone: therapist.phone || "",
       specialization: therapist.specialization || "",
       qualification: therapist.qualification || "",
@@ -94,6 +96,7 @@ const AdminTherapistManagement = () => {
       firstName: "",
       lastName: "",
       email: "",
+      password: "",
       phone: "",
       specialization: "",
       qualification: "",
@@ -175,6 +178,21 @@ const AdminTherapistManagement = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {editingTherapist ? "New Password (leave blank to keep current)" : "Password"}
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                required={!editingTherapist}
+                minLength={6}
               />
             </div>
 

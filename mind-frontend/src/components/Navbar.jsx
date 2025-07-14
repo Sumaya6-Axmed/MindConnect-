@@ -36,6 +36,29 @@ const Navbar = ({ user, userType, onLogout }) => {
 
         {!user ? (
           <div className="flex items-center gap-4 sm:gap-6">
+            {/* Public Navigation */}
+            <div className="hidden md:flex items-center gap-6">
+              <Link to="/" className={navLinkStyle}>
+                Home
+              </Link>
+              <Link to="/about" className={navLinkStyle}>
+                About
+              </Link>
+              <Link to="/contact" className={navLinkStyle}>
+                Contact
+              </Link>
+            </div>
+            
+            {/* Mobile Menu Button for Public */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            
             <Link 
               to="/login" 
               className="text-gray-700 hover:text-indigo-600 font-semibold px-3 sm:px-4 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base"
@@ -116,63 +139,79 @@ const Navbar = ({ user, userType, onLogout }) => {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenuOpen && user && (
+      {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="px-4 py-2 space-y-1">
-            <Link to="/dashboard" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-              Dashboard
-            </Link>
-
-            {userType !== "therapist" && user?.role?.name !== "ADMIN" && (
+            {!user ? (
               <>
-                <Link to="/journals" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                  Journals
+                <Link to="/" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                  Home
                 </Link>
-                <Link to="/sessions" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                  Sessions
+                <Link to="/about" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                  About
                 </Link>
-                <Link to="/book-session" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                  Book Session
-                </Link>
-                <Link to="/therapists" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                  Therapists
-                </Link>
-                <Link to="/notifications" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                  Notifications
+                <Link to="/contact" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                  Contact
                 </Link>
               </>
-            )}
+            ) : (
+              <>
+                <Link to="/dashboard" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                  Dashboard
+                </Link>
 
-            {userType === "therapist" && (
-              <Link to="/sessions" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                My Sessions
-              </Link>
-            )}
+                {userType !== "therapist" && user?.role?.name !== "ADMIN" && (
+                  <>
+                    <Link to="/journals" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                      Journals
+                    </Link>
+                    <Link to="/sessions" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                      Sessions
+                    </Link>
+                    <Link to="/book-session" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                      Book Session
+                    </Link>
+                    <Link to="/therapists" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                      Therapists
+                    </Link>
+                    <Link to="/notifications" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                      Notifications
+                    </Link>
+                  </>
+                )}
 
-            {userType !== "therapist" && (
-              <Link to="/motivation" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-                Motivation
-              </Link>
-            )}
-            
-            <Link to="/profile" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
-              Profile
-            </Link>
+                {userType === "therapist" && (
+                  <Link to="/sessions" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                    My Sessions
+                  </Link>
+                )}
 
-            {/* Mobile User Info */}
-            <div className="px-4 py-3 border-t border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    {user.firstName?.[0]}{user.lastName?.[0]}
-                  </span>
+                {userType !== "therapist" && (
+                  <Link to="/motivation" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                    Motivation
+                  </Link>
+                )}
+                
+                <Link to="/profile" className={mobileNavLinkStyle} onClick={() => setMobileMenuOpen(false)}>
+                  Profile
+                </Link>
+
+                {/* Mobile User Info */}
+                <div className="px-4 py-3 border-t border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-medium">
+                        {user.firstName?.[0]}{user.lastName?.[0]}
+                      </span>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                      <p className="text-gray-500 text-xs capitalize">{userType || user?.role?.name?.toLowerCase()}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-sm">
-                  <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                  <p className="text-gray-500 text-xs capitalize">{userType || user?.role?.name?.toLowerCase()}</p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
       )}
