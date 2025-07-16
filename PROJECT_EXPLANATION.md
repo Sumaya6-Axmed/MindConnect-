@@ -533,6 +533,185 @@ public ResponseEntity<?> createUser(@RequestBody User user) {
 
 ---
 
+## FRONTEND-BACKEND CONNECTION 🔗
+
+The connection between your React frontend and Spring Boot backend happens through **HTTP API calls** using the **Axios** library. Here's exactly where and how:
+
+### 🌐 Base URL Configuration
+**Every API call uses**: `http://localhost:8080`
+- **Backend (Spring Boot)**: Runs on port 8080
+- **Frontend (React/Vite)**: Runs on port 5173
+- **Communication**: HTTP requests with JSON data
+
+### 🔑 Authentication Headers
+```jsx
+const token = localStorage.getItem("token")
+const headers = { Authorization: `Bearer ${token}` }
+```
+Every authenticated request includes the JWT token in the header.
+
+### 📍 API Connection Points
+
+#### 1. **Login Authentication** (Login.jsx)
+```jsx
+const response = await axios.post("http://localhost:8080/api/auth/login", formData)
+```
+- **Frontend**: Sends email, password, userType
+- **Backend**: AuthController.login() validates and returns JWT token
+
+#### 2. **User Registration** (Register.jsx)
+```jsx
+const endpoint = userType === "therapist" 
+  ? "http://localhost:8080/api/auth/register-therapist"
+  : "http://localhost:8080/api/auth/register"
+```
+
+#### 3. **Dashboard Data** (UserDashboard.jsx)
+```jsx
+// Get user's journals
+const journalsResponse = await axios.get(
+  `http://localhost:8080/api/journals/user/${user.id}`, 
+  { headers }
+)
+
+// Get user's sessions
+const sessionsResponse = await axios.get(
+  `http://localhost:8080/api/sessions/user/${user.id}`, 
+  { headers }
+)
+
+// Get motivational content
+const motivationResponse = await axios.get(
+  "http://localhost:8080/api/motivations/active", 
+  { headers }
+)
+```
+
+#### 4. **Journal Management** (JournalForm.jsx, JournalList.jsx)
+```jsx
+// Create new journal
+await axios.post("http://localhost:8080/api/journals", journalData, { headers })
+
+// Update existing journal
+await axios.put(`http://localhost:8080/api/journals/${id}`, journalData, { headers })
+
+// Delete journal
+await axios.delete(`http://localhost:8080/api/journals/${id}`, { headers })
+```
+
+#### 5. **Session Booking** (SessionBooking.jsx)
+```jsx
+// Get available therapists
+const response = await axios.get("http://localhost:8080/api/therapists/available", { headers })
+
+// Book a session
+await axios.post("http://localhost:8080/api/sessions", sessionData, { headers })
+```
+
+#### 6. **Session Management** (SessionList.jsx)
+```jsx
+// Get sessions (different for users vs therapists)
+const endpoint = userType === "therapist"
+  ? `http://localhost:8080/api/sessions/therapist/${user.id}`
+  : `http://localhost:8080/api/sessions/user/${user.id}`
+
+// Update session status
+await axios.put(
+  `http://localhost:8080/api/sessions/${sessionId}/status`,
+  { status: newStatus },
+  { headers }
+)
+```
+
+#### 7. **Admin Operations** (Admin components)
+```jsx
+// Get all users, therapists, sessions simultaneously
+const [usersResponse, therapistsResponse, sessionsResponse] = await Promise.all([
+  axios.get("http://localhost:8080/api/users", { headers }),
+  axios.get("http://localhost:8080/api/therapists", { headers }),
+  axios.get("http://localhost:8080/api/sessions", { headers })
+])
+```
+
+### 🔄 Request/Response Flow
+
+**Example: Creating a Journal Entry**
+```jsx
+// 1. Frontend (JournalForm.jsx)
+const journalData = {
+  title: "My day",
+  content: "Today was good...",
+  mood: "HAPPY",
+  tags: "positive"
+}
+
+// 2. API Call
+const response = await axios.post(
+  "http://localhost:8080/api/journals", 
+  journalData, 
+  { headers: { Authorization: `Bearer ${token}` } }
+)
+
+// 3. Backend receives request at JournalController
+@PostMapping
+public ResponseEntity<Journal> createJournal(@RequestBody Journal journal) {
+  // 4. JournalService processes business logic
+  // 5. JournalRepository saves to database
+  // 6. Returns saved journal as JSON
+}
+
+// 7. Frontend receives response and updates UI
+setJournals([...journals, response.data])
+```
+
+### 🛡️ CORS Configuration (Backend)
+In your `SecurityConfig.java`:
+```java
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("*"));
+    
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
+```
+This allows your React app (port 5173) to make requests to Spring Boot (port 8080).
+
+### 📱 Error Handling
+```jsx
+try {
+  const response = await axios.post("http://localhost:8080/api/journals", journalData, { headers })
+  // Success handling
+} catch (error) {
+  setError(error.response?.data || "Operation failed")
+  // Error handling
+}
+```
+
+### 🚀 How to Start Both Servers
+
+**Backend (Spring Boot):**
+```bash
+cd mind_connect
+./mvnw spring-boot:run
+# Runs on http://localhost:8080
+```
+
+**Frontend (React):**
+```bash
+cd mind-frontend
+npm run dev
+# Runs on http://localhost:5173
+```
+
+**The connection is established when both are running!**
+
+---
+
 ## FRONTEND EXPLANATION (React.js)
 
 ### 20. Project Structure & Dependencies
